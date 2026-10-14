@@ -8,6 +8,17 @@
   <title>Sana küçük bir sorum var ❤️</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .muzik-dugmesi {
+      position: fixed; right: 16px; bottom: 16px; z-index: 80;
+      border: 1px solid rgba(255,79,135,.3); border-radius: 999px;
+      padding: 11px 16px; background: rgba(255,255,255,.94);
+      color: #54283D; font: 700 .92rem/1.2 inherit; font-family: inherit;
+      box-shadow: 0 8px 22px rgba(84,40,61,.18); cursor: pointer;
+    }
+    .muzik-dugmesi:hover { background: #FFF0F5; }
+    .muzik-dugmesi:focus-visible { outline: 3px solid #FF4F87; outline-offset: 3px; }
+  </style>
 </head>
 <body>
 
@@ -68,6 +79,11 @@
 
   </main>
 
+  <audio id="arkaPlanMuzigi" loop preload="none">
+    <source src="assets/music/wanna-be-yours.mp3" type="audio/mpeg">
+  </audio>
+  <button type="button" class="muzik-dugmesi" id="muzikDugmesi" aria-pressed="false">♫ Müziği başlat</button>
+
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Büyük fotoğraf görünümü" hidden>
     <button type="button" class="lb-kapat" id="lbKapat" aria-label="Galeriye dön (kapat)">✕</button>
     <div class="lightbox-icerik">
@@ -84,5 +100,43 @@
   </div>
 
   <script src="js/script.js"></script>
+  <script>
+    (() => {
+      const muzik = document.getElementById("arkaPlanMuzigi");
+      const dugme = document.getElementById("muzikDugmesi");
+
+      function dugmeyiGuncelle(caliyor) {
+        dugme.textContent = caliyor ? "Ⅱ Müziği durdur" : "♫ Müziği başlat";
+        dugme.setAttribute("aria-pressed", String(caliyor));
+      }
+
+      async function muzikBaslat() {
+        try {
+          await muzik.play();
+          dugmeyiGuncelle(true);
+        } catch {
+          dugmeyiGuncelle(false);
+        }
+      }
+
+      dugme.addEventListener("click", async () => {
+        if (muzik.paused) {
+          await muzikBaslat();
+        } else {
+          muzik.pause();
+          dugmeyiGuncelle(false);
+        }
+      });
+
+      muzik.addEventListener("ended", () => dugmeyiGuncelle(false));
+      muzik.addEventListener("error", () => {
+        dugme.textContent = "♫ Şarkı dosyasını ekle";
+        dugme.title = "assets/music/wanna-be-yours.mp3 dosyasını GitHub'a ekle";
+      });
+
+      // Tarayıcı izin verirse otomatik başlatmayı dener; engellenirse kullanıcı düğmeye basabilir.
+      muzikBaslat();
+    })();
+  </script>
 </body>
 </html>
