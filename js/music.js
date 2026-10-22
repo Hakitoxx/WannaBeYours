@@ -6,56 +6,86 @@
   if (!muzik || !dugme) return;
 
   let kullaniciDuraklatti = false;
-  let dosyaEksik = false;
+  let dosyaHatasi = false;
 
-  function durumuGuncelle() {
+  // Döngü ve autoplay hem HTML'de hem JavaScript'te tanımlı.
+  // Tarayıcı sesli otomatik oynatmaya izin verirse sayfa açılır açılmaz başlar.
+  muzik.loop = true;
+  muzik.autoplay = true;
+  muzik.preload = "auto";
+
+  function dugmeyiGuncelle() {
     const caliyor = !muzik.paused && !muzik.ended;
-    dugme.textContent = dosyaEksik
-      ? "♫ Şarkı dosyasını ekle"
-      : (caliyor ? "Ⅱ Müziği durdur" : "♫ Müziği başlat");
+    dugme.textContent = dosyaHatasi
+      ? "♫ Müzik yüklenemedi"
+      : caliyor ? "Ⅱ Müziği durdur" : "♫ Müziği başlat";
     dugme.setAttribute("aria-pressed", String(caliyor));
-    dugme.title = dosyaEksik
-      ? "assets/music/wanna-be-yours.mp3 dosyasını eklemelisin."
-      : (caliyor ? "Müziği durdur" : "Müziği başlat");
+    dugme.title = dosyaHatasi
+      ? "assets/music/wanna-be-yours.mp3 dosyasını kontrol et"
+      : caliyor ? "Müziği durdur" : "Müziği başlat";
   }
 
-  async function oynat() {
-    if (dosyaEksik || kullaniciDuraklatti) return;
+  function calmayaCalis() {
+    // Kullanıcı bilerek durdurduysa aynı ziyarette tekrar kendiliğinden başlatma.
+    if (kullaniciDuraklatti || dosyaHatasi || !muzik.paused) return;
+
     try {
-      await muzik.play();
+      const sonuc = muzik.play();
+      if (sonuc && typeof sonuc.catch === "function") {
+        sonuc.catch(() => {
+          // NotAllowedError: tarayıcı henüz sesli autoplay'e izin vermedi.
+          // Bu durumda kullanıcıya çalışır bir başlatma düğmesi sun.
+          dugmeyiGuncelle();
+        });
+      }
     } catch {
-      // Sesli otomatik oynatma bazı tarayıcılarda engellenir.
-      // Kullanıcı butondan veya sayfadaki ilk etkileşimden başlatabilir.
-      durumuGuncelle();
+      dugmeyiGuncelle();
     }
+
+    dugmeyiGuncelle();
   }
 
-  dugme.addEventListener("click", async () => {
+  dugme.addEventListener("click", () => {
     if (!muzik.paused) {
       kullaniciDuraklatti = true;
       muzik.pause();
     } else {
       kullaniciDuraklatti = false;
-      await oynat();
+      calmayaCalis();
     }
-    durumuGuncelle();
+    dugmeyiGuncelle();
   });
 
-  muzik.addEventListener("playing", durumuGuncelle);
-  muzik.addEventListener("pause", durumuGuncelle);
+  muzik.addEventListener("play", dugmeyiGuncelle);
+  muzik.addEventListener("playing", dugmeyiGuncelle);
+  muzik.addEventListener("pause", dugmeyiGuncelle);
+  muzik.addEventListener("ended", dugmeyiGuncelle);
   muzik.addEventListener("error", () => {
-    dosyaEksik = true;
-    durumuGuncelle();
+    dosyaHatasi = true;
+    dugmeyiGuncelle();
+  }, true);
+
+  // Autoplay engellenirse sayfadaki ilk dokunuş/klavye etkileşimini kullan.
+  // Müzik düğmesindeki olayları ayrıca ele al: iki kez tetiklenip
+  // anında duraklatma gibi bir yan etki oluşmasın.
+  function etkilesimdeBaslat(olay) {
+    if (olay.target instanceof Element && olay.target.closest("#muzikDugmesi")) return;
+    calmayaCalis();
+  }
+
+  document.addEventListener("pointerdown", etkilesimdeBaslat, { capture: true });
+  document.addEventListener("touchstart", etkilesimdeBaslat, { capture: true, passive: true });
+  document.addEventListener("keydown", (olay) => {
+    if (olay.target === dugme || ["Tab", "Shift", "Control", "Alt", "Meta"].includes(olay.key)) return;
+    calmayaCalis();
+  }, { capture: true });
+
+  window.addEventListener("pageshow", calmayaCalis);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) calmayaCalis();
   });
 
-  // Otomatik oynatma mümkünse ilk açılışta başlat.
-  // Engellendiyse ilk kullanıcı etkileşimini değerlendir.
-  document.addEventListener("pointerdown", (olay) => {
-    if (!olay.target.closest("#muzikDugmesi")) oynat();
-  }, { once: true });
-  document.addEventListener("keydown", (olay) => {
-    if (!["Tab", "Shift", "Control", "Alt", "Meta"].includes(olay.key)) oynat();
-  }, { once: true });
-  oynat();
-  durumuGuncelle();
+  // Sayfanın ilk yüklenmesinde izin varsa ses hemen başlar.
+  calmayaCalis();
+  dugmeyiGuncelle();
 })();
