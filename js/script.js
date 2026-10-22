@@ -1,25 +1,17 @@
 "use strict";
 
 /* =========================================================
-   1) ALBÜM VERİLERİ  →  ★ BURAYI DÜZENLEYEREK FOTOĞRAF EKLERSİNİZ ★
-   ---------------------------------------------------------
-   Fotoğraf eklemek için:
-   a) Fotoğrafları assets/photos/album-1 (veya album-2, album-3)
-      klasörünün içine kopyalayın.
-   b) Aşağıdaki ilgili albümün "photos" listesine dosya yolunu ekleyin:
-      "assets/photos/album-1/benim-fotom.jpg"
-
-   Albüm adını / açıklamasını değiştirmek için "title" ve
-   "description" alanlarını düzenleyin.
+   1) HEDİYELER VE KİŞİSELLEŞTİRME
+   Yalnızca bir hediye fotoğraf albümüdür.
    ========================================================= */
 
 const albums = [
   {
     id: "album-1",
-    title: "Güzel Anılarımız 💕",
-    description: "Birlikte çekildiğimiz fotoğraflar.",
+    title: "Bizim Fotoğraflarımız 📸",
+    description: "Birlikte saklamak istediğimiz anılar.",
     cover: "assets/gifs/album-1.gif",
-    emoji: "💕",
+    emoji: "📸",
     photos: [
       "assets/photos/album-1/foto1.jpg",
       "assets/photos/album-1/foto2.jpg",
@@ -28,37 +20,37 @@ const albums = [
       "assets/photos/album-1/foto5.jpg",
       "assets/photos/album-1/foto6.jpg"
     ]
-  },
-  {
-    id: "album-2",
-    title: "En Tatlı Anlarımız 🧸",
-    description: "Gülümseten ve unutulmaz karelerimiz.",
-    cover: "assets/gifs/album-2.gif",
-    emoji: "🧸",
-    photos: [
-      "assets/photos/album-2/foto1.jpg",
-      "assets/photos/album-2/foto2.jpg",
-      "assets/photos/album-2/foto3.jpg",
-      "assets/photos/album-2/foto4.jpg",
-      "assets/photos/album-2/foto5.jpg",
-      "assets/photos/album-2/foto6.jpg"
-    ]
-  },
-  {
-    id: "album-3",
-    title: "Sadece Biz ✨",
-    description: "Bize özel diğer fotoğraflar.",
-    cover: "assets/gifs/album-3.gif",
-    emoji: "✨",
-    photos: [
-      "assets/photos/album-3/foto1.jpg",
-      "assets/photos/album-3/foto2.jpg",
-      "assets/photos/album-3/foto3.jpg",
-      "assets/photos/album-3/foto4.jpg",
-      "assets/photos/album-3/foto5.jpg",
-      "assets/photos/album-3/foto6.jpg"
-    ]
   }
+];
+
+const hediyeler = [
+  { id:"fotograflar", tur:"photos", title:"Bizim Fotoğraflarımız 📸", description:"En güzel karelerimizi sakladığım kutu.", emoji:"📸", cover:"assets/gifs/album-1.gif" },
+  { id:"mektup", tur:"letter", title:"Sana Bir Mektubum Var 💌", description:"Açılmayı bekleyen küçük bir zarf.", emoji:"💌" },
+  { id:"notlar", tur:"notes", title:"Sende Sevdiğim Şeyler 💖", description:"Dokun, her kartta bir gülümseme bul.", emoji:"💖" },
+  { id:"kuponlar", tur:"coupons", title:"Birlikte Yapılacaklar 🎟️", description:"Minik planlar, güzel anılar.", emoji:"🎟️" }
+];
+
+/* Bu metinleri kendi ilişkinize göre değiştirebilirsiniz. */
+const mektupSatirlari = [
+  "Bazen en güzel şeyler, en beklemediğimiz anlarda karşımıza çıkar.",
+  "Seninle konuşmak, gülmek ve küçük anıları biriktirmek günleri daha özel kılıyor.",
+  "Bu sayfa, birlikte yaşayacağımız güzel anılara küçük bir hatıra olsun. 💗"
+];
+
+const sevgiNotlari = [
+  "Gülüşün günümü güzelleştiriyor. ☀️",
+  "En sıradan anları bile eğlenceli yapıyorsun. ✨",
+  "Birlikte gülebilmek çok güzel. 🧸",
+  "Sana anlatacak yeni şeyler bulmak hoşuma gidiyor. 🌷",
+  "Küçük sürprizlerin hep çok özel. 🎀",
+  "İyi ki yollarımız kesişmiş. 💕"
+];
+
+const surprizKuponlar = [
+  { emoji:"🍿", title:"Film Gecesi", description:"Filmi ve atıştırmalığı birlikte seçelim." },
+  { emoji:"☕", title:"Kahve Molası", description:"Uzun uzun sohbet edeceğimiz bir mola." },
+  { emoji:"🎲", title:"Oyun Saati", description:"Beraber eğlenceli bir oyun oynayalım." },
+  { emoji:"🌸", title:"Sürpriz Gün", description:"Küçük, tatlı bir etkinliği birlikte planlayalım." }
 ];
 
 /* =========================================================
@@ -85,7 +77,15 @@ const dosyaAdi = (yol) => (yol || "").split("/").pop();
 let hareketAzalt = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function gorselHatasiIzle(img, kap, sinif = "gif-yok") {
-  const hata = () => kap.classList.add(sinif);
+  const hata = () => {
+    // Harici kedi GIF'i açılmazsa kendi çizimimiz yerel olarak çalışır.
+    if (img.id === "heroGif" && !img.dataset.yedekDenendi) {
+      img.dataset.yedekDenendi = "1";
+      img.src = "assets/gifs/hugging-cats.svg";
+      return;
+    }
+    kap.classList.add(sinif);
+  };
   img.addEventListener("error", hata);
   if (img.complete && img.naturalWidth === 0) hata();
 }
@@ -136,22 +136,15 @@ const butonAlani = sec("#butonAlani");
 const mesajEl = sec("#hayirMesaji");
 
 let hayirSayisi = 0;
-let evetOlcek = 1;
-let hayirOlcek = 1;
-
-const HAYIR_MIN_OLCEK = 0.55;
-
-function evetMaksOlcek() {
-  const kutuGenisligi = butonAlani.clientWidth || window.innerWidth - 80;
-  const butonGenisligi = evetBtn.offsetWidth || 140;
-  const sigar = (kutuGenisligi - 28) / butonGenisligi;
-  const ekranSiniri = window.innerWidth < 520 ? 1.7 : 2.3;
-  return Math.max(1.25, Math.min(sigar, ekranSiniri));
-}
+const HAYIR_SINIRI = 7;
 
 function olcekleriUygula() {
-  evetBtn.style.setProperty("--e-o", evetOlcek.toFixed(3));
-  hayirBtn.style.setProperty("--h-o", hayirOlcek.toFixed(3));
+  const kademe = Math.min(hayirSayisi, HAYIR_SINIRI);
+  // font-size / padding akışa dahildir: başlığın veya mesajın üstüne çıkmaz.
+  evetBtn.style.setProperty("--e-font", (1.02 + kademe * 0.085).toFixed(3) + "rem");
+  evetBtn.style.setProperty("--e-pad-y", (14 + kademe * 2) + "px");
+  evetBtn.style.setProperty("--e-pad-x", (30 + kademe * 4) + "px");
+  hayirBtn.style.setProperty("--h-o", Math.max(0.28, 1 - kademe * 0.11).toFixed(2));
 }
 
 function salla(eleman) {
@@ -175,20 +168,23 @@ function mesajGuncelle() {
 }
 
 hayirBtn.addEventListener("click", () => {
+  if (hayirSayisi >= HAYIR_SINIRI) return;
   hayirSayisi += 1;
-
-  const evetArtis = 0.1 + hayirSayisi * 0.02;
-  const hayirAzalis = 0.08 + hayirSayisi * 0.015;
-
-  evetOlcek = Math.min(evetOlcek + evetArtis, evetMaksOlcek());
-  hayirOlcek = Math.max(hayirOlcek - hayirAzalis, HAYIR_MIN_OLCEK);
   olcekleriUygula();
 
-  salla(hayirBtn);
-  nabizEkle();
-  mesajGuncelle();
+  if (hayirSayisi >= HAYIR_SINIRI) {
+    hayirBtn.hidden = true;
+    hayirBtn.disabled = true;
+    butonAlani.classList.add("yalniz-evet");
+    mesajEl.textContent = "Artık sadece Evet kaldı! 💗";
+    nabizEkle();
+  } else {
+    salla(hayirBtn);
+    nabizEkle();
+    mesajGuncelle();
+  }
 
-  const kutu = hayirBtn.getBoundingClientRect();
+  const kutu = hayirBtn.hidden ? evetBtn.getBoundingClientRect() : hayirBtn.getBoundingClientRect();
   kalpPatlamasi(kutu.left + kutu.width / 2, kutu.top + kutu.height / 2, 8, ["💗", "💕", "🙈"]);
 });
 
@@ -196,11 +192,6 @@ evetBtn.addEventListener("click", () => {
   const kutu = evetBtn.getBoundingClientRect();
   kalpPatlamasi(kutu.left + kutu.width / 2, kutu.top + kutu.height / 2, 20);
   window.setTimeout(() => ekranDegistir("albumEkrani"), hareketAzalt ? 0 : 260);
-});
-
-window.addEventListener("resize", () => {
-  evetOlcek = Math.max(1, Math.min(evetOlcek, evetMaksOlcek()));
-  olcekleriUygula();
 });
 
 /* =========================================================
@@ -247,27 +238,166 @@ let aktifAlbum = null;
 let aktifFotoIndex = 0;
 
 function albumleriOlustur() {
-  albumIzgara.innerHTML = "";
+  albumIzgara.replaceChildren();
 
-  albums.forEach((album) => {
+  hediyeler.forEach((hediye) => {
     const kart = document.createElement("article");
     kart.className = "album-kart";
-    kart.innerHTML = `
-      <div class="album-kapak">
-        <img src="${album.cover}" alt="${album.title} albümünün kapak görseli" loading="lazy">
-        <span class="kapak-yedek" aria-hidden="true">${album.emoji || "💗"}</span>
-      </div>
-      <h3 class="album-ad">${album.title}</h3>
-      <p class="album-aciklama">${album.description}</p>
-      <button type="button" class="btn btn-album">Albümü Aç</button>
-    `;
 
-    const kapak = kart.querySelector(".album-kapak");
-    gorselHatasiIzle(kart.querySelector("img"), kapak);
+    const kapak = document.createElement("div");
+    kapak.className = "album-kapak";
+    if (hediye.cover) {
+      const resim = document.createElement("img");
+      resim.src = hediye.cover;
+      resim.alt = "";
+      resim.loading = "lazy";
+      const yedek = document.createElement("span");
+      yedek.className = "kapak-yedek";
+      yedek.setAttribute("aria-hidden", "true");
+      yedek.textContent = hediye.emoji;
+      kapak.append(resim, yedek);
+      gorselHatasiIzle(resim, kapak);
+    } else {
+      const ikon = document.createElement("span");
+      ikon.className = "hediye-emoji";
+      ikon.setAttribute("aria-hidden", "true");
+      ikon.textContent = hediye.emoji;
+      kapak.appendChild(ikon);
+    }
 
-    kart.querySelector(".btn-album").addEventListener("click", () => galeriAc(album));
+    const baslik = document.createElement("h3");
+    baslik.className = "album-ad";
+    baslik.textContent = hediye.title;
+
+    const aciklama = document.createElement("p");
+    aciklama.className = "album-aciklama";
+    aciklama.textContent = hediye.description;
+
+    const ac = document.createElement("button");
+    ac.type = "button";
+    ac.className = "btn btn-album";
+    ac.textContent = "Hediyeyi Aç";
+    ac.addEventListener("click", () => hediyeAc(hediye));
+
+    kart.append(kapak, baslik, aciklama, ac);
     albumIzgara.appendChild(kart);
   });
+}
+
+function hediyeAc(hediye) {
+  if (hediye.tur === "photos") {
+    galeriAc(albums[0]);
+    return;
+  }
+
+  sec("#hediyeBaslik").textContent = hediye.title;
+  const icerik = sec("#hediyeIcerik");
+  icerik.replaceChildren();
+
+  const aciklama = document.createElement("p");
+  aciklama.className = "hediye-intro";
+  aciklama.textContent = hediye.description;
+  icerik.appendChild(aciklama);
+
+  if (hediye.tur === "letter") mektubuOlustur(icerik);
+  if (hediye.tur === "notes") notlariOlustur(icerik);
+  if (hediye.tur === "coupons") kuponlariOlustur(icerik);
+  ekranDegistir("hediyeEkrani");
+}
+
+function mektubuOlustur(icerik) {
+  const zarf = document.createElement("button");
+  zarf.type = "button";
+  zarf.className = "mektup-zarfi";
+  zarf.setAttribute("aria-expanded", "false");
+  zarf.setAttribute("aria-controls", "mektupKagidi");
+  const ikon = document.createElement("span");
+  ikon.className = "zarf-ikon";
+  ikon.textContent = "💌";
+  ikon.setAttribute("aria-hidden", "true");
+  const etiket = document.createElement("span");
+  etiket.textContent = "Mektubu açmak için dokun";
+  zarf.append(ikon, etiket);
+
+  const kagit = document.createElement("article");
+  kagit.id = "mektupKagidi";
+  kagit.className = "mektup-kagidi";
+  kagit.hidden = true;
+
+  mektupSatirlari.forEach((satir) => {
+    const p = document.createElement("p");
+    p.textContent = satir;
+    kagit.appendChild(p);
+  });
+  const imza = document.createElement("p");
+  imza.className = "mektup-imza";
+  imza.textContent = "Sevgiyle... 💗";
+  kagit.appendChild(imza);
+
+  zarf.addEventListener("click", () => {
+    kagit.hidden = !kagit.hidden;
+    const acik = !kagit.hidden;
+    zarf.setAttribute("aria-expanded", String(acik));
+    etiket.textContent = acik ? "Mektubu kapat" : "Mektubu açmak için dokun";
+    ikon.textContent = acik ? "💝" : "💌";
+  });
+  icerik.append(zarf, kagit);
+}
+
+function notlariOlustur(icerik) {
+  const izgara = document.createElement("div");
+  izgara.className = "not-izgara";
+  sevgiNotlari.forEach((metin, index) => {
+    const kart = document.createElement("button");
+    kart.type = "button";
+    kart.className = "not-karti";
+    kart.setAttribute("aria-expanded", "false");
+    kart.textContent = "💗 " + (index + 1) + ". notu aç";
+    kart.addEventListener("click", () => {
+      const acik = kart.classList.toggle("acik");
+      kart.setAttribute("aria-expanded", String(acik));
+      kart.textContent = acik ? metin : "💗 " + (index + 1) + ". notu aç";
+    });
+    izgara.appendChild(kart);
+  });
+  icerik.appendChild(izgara);
+}
+
+function kuponlariOlustur(icerik) {
+  const izgara = document.createElement("div");
+  izgara.className = "kupon-izgara";
+
+  surprizKuponlar.forEach((kupon) => {
+    const kart = document.createElement("button");
+    kart.type = "button";
+    kart.className = "kupon-karti";
+    kart.setAttribute("aria-pressed", "false");
+
+    const ikon = document.createElement("span");
+    ikon.className = "kupon-ikon";
+    ikon.textContent = kupon.emoji;
+    ikon.setAttribute("aria-hidden", "true");
+
+    const baslik = document.createElement("span");
+    baslik.textContent = kupon.title;
+
+    const detay = document.createElement("span");
+    detay.className = "kupon-detay";
+    detay.textContent = kupon.description;
+
+    const durum = document.createElement("span");
+    durum.className = "kupon-durum";
+    durum.textContent = "Seçmek için dokun";
+    kart.append(ikon, baslik, detay, durum);
+
+    kart.addEventListener("click", () => {
+      const secildi = kart.classList.toggle("secilmis");
+      kart.setAttribute("aria-pressed", String(secildi));
+      durum.textContent = secildi ? "Seçildi ✓ Tekrar dokunarak kaldır" : "Seçmek için dokun";
+    });
+    izgara.appendChild(kart);
+  });
+  icerik.appendChild(izgara);
 }
 
 function galeriAc(album) {
@@ -303,8 +433,8 @@ function fotoIzgarasiniOlustur(album) {
     img.alt = `${album.title} - ${index + 1}. fotoğraf`;
     img.loading = "lazy";
     img.addEventListener("error", () => yedekGoster(kutu, yol));
-    if (img.complete && img.naturalWidth === 0) yedekGoster(kutu, yol);
     kutu.appendChild(img);
+    if (img.complete && img.naturalWidth === 0) yedekGoster(kutu, yol);
 
     kutu.addEventListener("click", () => lightboxAc(index));
     fotoIzgara.appendChild(kutu);
@@ -444,6 +574,7 @@ document.addEventListener("keydown", (olay) => {
 
 sec("#albumlereDonBtn").addEventListener("click", () => ekranDegistir("albumEkrani"));
 sec("#soruyaDonBtn").addEventListener("click", () => ekranDegistir("soruEkrani"));
+sec("#hediyelereDonBtn").addEventListener("click", () => ekranDegistir("albumEkrani"));
 
 /* =========================================================
    10) ARKA PLAN DEKORU (yüzen kalpler + parıltılar)
@@ -457,14 +588,15 @@ function arkaPlaniOlustur() {
   if (hareketAzalt) return;
 
   const kalpAdedi = window.innerWidth < 640 ? 9 : 15;
-  const semboller = ["❤️", "💗", "💕", "💖"];
+  const semboller = ["❤️", "💗", "💕", "💖", "🌸", "🦋", "✨", "🎀", "💝", "🌷"];
 
   for (let i = 0; i < kalpAdedi; i += 1) {
     const kalp = document.createElement("span");
     kalp.className = "yuzen-kalp";
     kalp.textContent = semboller[i % semboller.length];
     kalp.style.left = `${(Math.random() * 96).toFixed(1)}%`;
-    kalp.style.fontSize = `${Math.round(10 + Math.random() * 15)}px`;
+    kalp.style.fontSize = `${Math.round(11 + Math.random() * 15)}px`;
+    kalp.style.setProperty("--bulanik", `${(Math.random() * 1.1).toFixed(1)}px`);
     kalp.style.setProperty("--sure", `${(15 + Math.random() * 18).toFixed(1)}s`);
     kalp.style.setProperty("--gecikme", `${(-Math.random() * 24).toFixed(1)}s`);
     kalp.style.setProperty("--op", `${(0.22 + Math.random() * 0.3).toFixed(2)}`);
