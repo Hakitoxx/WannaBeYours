@@ -47,10 +47,10 @@ const sevgiNotlari = [
 ];
 
 const surprizKuponlar = [
-  { emoji:"🍿", title:"Film Gecesi", description:"Filmi ve atıştırmalığı birlikte seçelim." },
-  { emoji:"☕", title:"Kahve Molası", description:"Uzun uzun sohbet edeceğimiz bir mola." },
-  { emoji:"🎲", title:"Oyun Saati", description:"Beraber eğlenceli bir oyun oynayalım." },
-  { emoji:"🌸", title:"Sürpriz Gün", description:"Küçük, tatlı bir etkinliği birlikte planlayalım." }
+  { emoji:"🍿", title:"Film Gecesi", description:"Birlikte bir film seçip sevdiğimiz atıştırmalıkları hazırlayalım." },
+  { emoji:"🍦", title:"Dondurma Molası", description:"Sevdiğimiz dondurmayı seçip birlikte biraz gezelim." },
+  { emoji:"🎮", title:"Oyun Saati", description:"Birlikte oyun oynayıp eğlenceli bir mini turnuva yapalım." },
+  { emoji:"🌸", title:"Sürpriz Gün", description:"Küçük bir sürpriz planlayıp yeni bir anı biriktirelim." }
 ];
 
 /* =========================================================
