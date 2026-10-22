@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Senin için hazırlanmış küçük ve romantik bir sürpriz.">
   <meta name="theme-color" content="#FFD6E7">
+  <meta name="color-scheme" content="light">
   <title>Sana küçük bir sorum var ❤️</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
   <link rel="stylesheet" href="css/style.css">
@@ -30,7 +31,7 @@
     <section class="ekran aktif" id="soruEkrani" aria-labelledby="soruBaslik">
       <div class="kart">
         <div class="hero-medya" id="heroMedya">
-          <img class="hero-gif" id="heroGif" src="assets/gifs/hero.gif" alt="Kalp uzatan sevimli bir karakter">
+          <img class="hero-gif" id="heroGif" src="https://media.tenor.com/tEJ0EhvOE5QAAAAC/peach-cat-hug.gif" alt="Birbirine sarılan iki çizim kedi" referrerpolicy="no-referrer">
           <div class="medya-yedek" aria-hidden="true">
             <svg class="kalp-svg" viewBox="0 0 32 30" focusable="false" aria-hidden="true">
               <defs>
@@ -61,8 +62,8 @@
     <section class="ekran" id="albumEkrani" aria-labelledby="albumBaslik" hidden>
       <div class="kart kart-genis">
         <button type="button" class="btn-geri btn-geri-ust" id="soruyaDonBtn">← Geri Dön</button>
-        <h2 class="bolum-basligi" id="albumBaslik" tabindex="-1" data-odak>Birlikte biriktirdiğimiz güzel anılar... 💗</h2>
-        <p class="alt-aciklama">Birini seç, birlikte hatırlayalım.</p>
+        <h2 class="bolum-basligi" id="albumBaslik" tabindex="-1" data-odak>Senin için küçük sürprizlerim var... 🎁</h2>
+        <p class="alt-aciklama">Dört kutu, dört ayrı sürpriz. Hangisinden başlayalım?</p>
         <div class="album-izgara" id="albumIzgara"></div>
       </div>
     </section>
@@ -70,16 +71,24 @@
     <section class="ekran" id="galeriEkrani" aria-labelledby="galeriBaslik" hidden>
       <div class="kart kart-genis">
         <div class="galeri-ust">
-          <button type="button" class="btn-geri" id="albumlereDonBtn">← Geri Dön</button>
+          <button type="button" class="btn-geri" id="albumlereDonBtn">← Hediyelere Dön</button>
           <h2 class="bolum-basligi" id="galeriBaslik" tabindex="-1" data-odak></h2>
         </div>
         <div class="foto-izgara" id="fotoIzgara"></div>
       </div>
     </section>
 
+    <section class="ekran" id="hediyeEkrani" aria-labelledby="hediyeBaslik" hidden>
+      <div class="kart kart-genis">
+        <button type="button" class="btn-geri btn-geri-ust" id="hediyelereDonBtn">← Hediyelere Dön</button>
+        <h2 class="bolum-basligi" id="hediyeBaslik" tabindex="-1" data-odak></h2>
+        <div class="hediye-icerik" id="hediyeIcerik"></div>
+      </div>
+    </section>
+
   </main>
 
-  <audio id="arkaPlanMuzigi" loop preload="none">
+  <audio id="arkaPlanMuzigi" loop preload="metadata">
     <source src="assets/music/wanna-be-yours.mp3" type="audio/mpeg">
   </audio>
   <button type="button" class="muzik-dugmesi" id="muzikDugmesi" aria-pressed="false">♫ Müziği başlat</button>
@@ -100,43 +109,6 @@
   </div>
 
   <script src="js/script.js"></script>
-  <script>
-    (() => {
-      const muzik = document.getElementById("arkaPlanMuzigi");
-      const dugme = document.getElementById("muzikDugmesi");
-
-      function dugmeyiGuncelle(caliyor) {
-        dugme.textContent = caliyor ? "Ⅱ Müziği durdur" : "♫ Müziği başlat";
-        dugme.setAttribute("aria-pressed", String(caliyor));
-      }
-
-      async function muzikBaslat() {
-        try {
-          await muzik.play();
-          dugmeyiGuncelle(true);
-        } catch {
-          dugmeyiGuncelle(false);
-        }
-      }
-
-      dugme.addEventListener("click", async () => {
-        if (muzik.paused) {
-          await muzikBaslat();
-        } else {
-          muzik.pause();
-          dugmeyiGuncelle(false);
-        }
-      });
-
-      muzik.addEventListener("ended", () => dugmeyiGuncelle(false));
-      muzik.addEventListener("error", () => {
-        dugme.textContent = "♫ Şarkı dosyasını ekle";
-        dugme.title = "assets/music/wanna-be-yours.mp3 dosyasını GitHub'a ekle";
-      });
-
-      // Tarayıcı izin verirse otomatik başlatmayı dener; engellenirse kullanıcı düğmeye basabilir.
-      muzikBaslat();
-    })();
-  </script>
+  <script src="js/music.js"></script>
 </body>
 </html>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 255" role="img" aria-label="Birbirine sarılan iki sevimli kedi">
+  <title>Birbirine sarılan iki kedi</title>
+  <style>
+    .cat-left{animation:swayLeft 2.4s ease-in-out infinite;transform-origin:132px 190px}
+    .cat-right{animation:swayRight 2.4s ease-in-out infinite;transform-origin:210px 190px}
+    .tiny-heart{animation:floatHeart 2.4s ease-in-out infinite;transform-origin:center}
+    .tiny-heart.two{animation-delay:.8s}
+    @keyframes swayLeft{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(2deg)}}
+    @keyframes swayRight{0%,100%{transform:rotate(3deg)}50%{transform:rotate(-2deg)}}
+    @keyframes floatHeart{0%,100%{opacity:.45;transform:translateY(5px) scale(.8)}50%{opacity:1;transform:translateY(-5px) scale(1.08)}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+  </style>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff8fb"/>
+      <stop offset="1" stop-color="#ffdfed"/>
+    </linearGradient>
+  </defs>
+  <rect width="340" height="255" rx="28" fill="url(#bg)"/>
+  <ellipse cx="170" cy="226" rx="112" ry="12" fill="#e5abc6" opacity=".32"/>
+  <g class="cat-left" stroke="#a56c73" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M80 171 Q49 177 60 201 Q71 216 85 199" fill="none"/>
+    <ellipse cx="128" cy="177" rx="54" ry="56" fill="#f4c8a1"/>
+    <path d="M88 112 L87 56 Q110 68 121 85 L147 80 Q161 64 177 60 L169 125Z" fill="#f4c8a1"/>
+    <circle cx="132" cy="120" r="57" fill="#f4c8a1"/>
+    <path d="M95 95 Q104 90 113 99 M143 98 Q153 88 163 95" fill="none"/>
+    <path d="M112 122 Q121 130 130 122 M146 122 Q155 130 163 120" fill="none"/>
+    <path d="M134 132 l-5 5 10 0z" fill="#e78991" stroke="none"/>
+    <circle cx="99" cy="132" r="10" fill="#f7a6a5" stroke="none" opacity=".65"/>
+    <circle cx="164" cy="134" r="10" fill="#f7a6a5" stroke="none" opacity=".65"/>
+  </g>
+  <g class="cat-right" stroke="#987985" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M253 171 Q279 178 282 196 Q283 214 265 211" fill="none"/>
+    <ellipse cx="210" cy="177" rx="55" ry="56" fill="#fefcf7"/>
+    <path d="M171 113 L170 54 Q193 62 203 83 L230 82 Q242 63 260 59 L252 120Z" fill="#fefcf7"/>
+    <circle cx="210" cy="119" r="57" fill="#fefcf7"/>
+    <path d="M178 95 Q187 88 196 98 M226 97 Q236 90 244 96" fill="none"/>
+    <path d="M188 122 Q197 131 206 121 M221 120 Q230 131 238 121" fill="none"/>
+    <path d="M212 132 l-5 5 10 0z" fill="#e989a2" stroke="none"/>
+    <circle cx="178" cy="133" r="10" fill="#ffa9ba" stroke="none" opacity=".6"/>
+    <circle cx="242" cy="133" r="10" fill="#ffa9ba" stroke="none" opacity=".6"/>
+  </g>
+  <path d="M104 161 Q153 154 188 181" fill="none" stroke="#b98374" stroke-width="17" stroke-linecap="round"/>
+  <path d="M240 160 Q199 147 164 183" fill="none" stroke="#e9d8cf" stroke-width="17" stroke-linecap="round"/>
+  <path class="tiny-heart" d="M166 42 C146 24 146 10 161 10 Q171 10 177 23 Q192 6 205 15 Q224 36 177 63Z" fill="#ff5f98"/>
+  <path class="tiny-heart two" d="M245 45 Q232 29 244 25 Q251 22 255 30 Q267 17 275 26 Q285 37 255 56Z" fill="#ff9fba"/>
+</svg>
